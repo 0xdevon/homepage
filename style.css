@@ -23,6 +23,11 @@
   --page-padding: 32px 20px;
   --content-width: 880px;
   --card-width: 460px;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
 
 html[data-theme="light"] {
@@ -49,19 +54,36 @@ html[data-theme="light"] {
 
 html, body {
   margin: 0;
+  width: 100%;
   min-height: 100%;
+  height: 100%;
   font-family: "PingFang SC", "PingFang TC", "PingFang HK", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
   font-weight: 400;
-  background: #000;
+  background: #0f1722;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-body { min-height: 100vh; }
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+  background:
+    linear-gradient(to bottom, var(--bg-overlay-1), var(--bg-overlay-2) 30%, var(--bg-overlay-3) 100%),
+    url("./assets/bg.svg") center/cover no-repeat;
+  background-attachment: fixed;
+}
 
-.page-shell { min-height: 100vh; opacity: 1; }
+.page-shell {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  opacity: 1;
+}
 .page-shell.is-loading .fade-item { opacity: 0; transform: translateY(22px) scale(0.985); }
 .fade-item {
   opacity: 1;
@@ -129,9 +151,15 @@ html[data-theme="light"] .theme-icon--sun { opacity: 1; transform: scale(1); }
 .hero {
   position: relative;
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: var(--page-padding);
+  padding:
+    calc(32px + var(--safe-top))
+    calc(20px + var(--safe-right))
+    calc(32px + var(--safe-bottom))
+    calc(20px + var(--safe-left));
   background:
     linear-gradient(to bottom, var(--bg-overlay-1), var(--bg-overlay-2) 30%, var(--bg-overlay-3) 100%),
     url("./assets/bg.svg") center/cover no-repeat;
@@ -158,9 +186,13 @@ html[data-theme="light"] .hero::before {
   position: relative;
   z-index: 1;
   width: min(100%, var(--content-width));
+  min-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 64px);
+  min-height: calc(100svh - var(--safe-top) - var(--safe-bottom) - 64px);
+  min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 64px);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
@@ -360,8 +392,18 @@ body.light .copyright {
 .social-btn svg { width: 24px; height: 24px; }
 
 @media (max-width: 640px) {
-  .hero { padding: 24px 16px; background-position: center center; }
-  .topbar { top: 14px; right: 14px; }
+  .hero {
+    padding:
+      calc(24px + var(--safe-top))
+      calc(16px + var(--safe-right))
+      calc(24px + var(--safe-bottom))
+      calc(16px + var(--safe-left));
+    background-position: center center;
+  }
+  .topbar {
+    top: calc(14px + var(--safe-top));
+    right: calc(14px + var(--safe-right));
+  }
   .ghost-btn { width: 44px; height: 44px; }
   .avatar { width: 78px; height: 78px; margin-bottom: 16px; }
   .subtitle { margin: 14px auto 24px; font-size: 0.95rem; line-height: 1.76; }
@@ -371,4 +413,70 @@ body.light .copyright {
   .link-icon--wide { width: 36px; }
   .brand-icon-png { width: 20px; height: 20px; }
   .brand-icon-png--wide { height: 17px; max-width: 52px; }
+}
+
+.install-tip {
+  width: min(100%, 460px);
+  margin-top: 18px;
+  padding: 12px 14px 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 18px;
+  color: var(--text);
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.09));
+  border: 1px solid rgba(255,255,255,0.22);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.14);
+}
+.install-tip.hidden { display: none; }
+.install-tip__text {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  text-align: left;
+  color: var(--muted);
+}
+.install-tip__close {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(255,255,255,0.1);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+html.is-standalone .install-tip { display: none !important; }
+html.is-standalone .topbar {
+  top: calc(18px + var(--safe-top));
+  right: calc(18px + var(--safe-right));
+}
+html.is-standalone .hero {
+  padding-top: calc(32px + var(--safe-top));
+  padding-bottom: calc(32px + var(--safe-bottom));
+}
+
+@media (max-width: 640px) {
+  .install-tip {
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+  .install-tip__text {
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+  html.is-standalone .topbar {
+    top: calc(14px + var(--safe-top));
+    right: calc(14px + var(--safe-right));
+  }
+}
+
+@media (max-width: 640px) {
+  body { background-attachment: scroll; }
 }

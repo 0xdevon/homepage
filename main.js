@@ -55,9 +55,14 @@
   const quickActions = document.getElementById("quickActions");
   const langToggle = document.getElementById("langToggle");
   const themeToggle = document.getElementById("themeToggle");
+  const themeColorMeta = document.getElementById("themeColorMeta");
+  const installTip = document.getElementById("installTip");
+  const installTipText = document.getElementById("installTipText");
+  const installTipClose = document.getElementById("installTipClose");
 
   const THEME_KEY = "homepage-theme";
   const LANG_KEY = "homepage-lang";
+  const TIP_KEY = "homepage-install-tip-dismissed";
 
   let currentTheme = localStorage.getItem(THEME_KEY) || config.defaultTheme || "dark";
   let currentLanguage = localStorage.getItem(LANG_KEY) || config.defaultLanguage || "zh";
@@ -66,6 +71,19 @@
     if (value == null) return "";
     if (typeof value === "string") return value;
     return value[currentLanguage] || value.zh || value.en || "";
+  }
+
+  function isStandaloneMode() {
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  }
+
+  function updateStandaloneClass() {
+    document.documentElement.classList.toggle("is-standalone", isStandaloneMode());
+  }
+
+  function updateThemeColor() {
+    if (!themeColorMeta) return;
+    themeColorMeta.setAttribute("content", currentTheme === "light" ? "#e7edf5" : "#0f1722");
   }
 
   function setTheme(theme) {
@@ -78,21 +96,30 @@
       ? (textByLang(themeText.themeToDark) || "Switch to dark mode")
       : (textByLang(themeText.themeToLight) || "Switch to light mode");
     themeToggle.setAttribute("aria-label", ariaLabel);
+    updateThemeColor();
   }
 
   function setLanguage(lang) {
     currentLanguage = lang === "en" ? "en" : "zh";
     localStorage.setItem(LANG_KEY, currentLanguage);
     render();
+    syncInstallTip();
   }
 
   function applyBackground() {
-    if (config.backgroundImage) {
-      hero.style.backgroundImage = `
-        linear-gradient(to bottom, var(--bg-overlay-1), var(--bg-overlay-2) 30%, var(--bg-overlay-3) 100%),
-        url("${config.backgroundImage}")
-      `;
-    }
+    if (!config.backgroundImage) return;
+
+    const backgroundValue = `
+      linear-gradient(to bottom, var(--bg-overlay-1), var(--bg-overlay-2) 30%, var(--bg-overlay-3) 100%),
+      url("${config.backgroundImage}")
+    `;
+
+    hero.style.backgroundImage = backgroundValue;
+    document.body.style.backgroundImage = backgroundValue;
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center center";
+    document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundAttachment = "fixed";
   }
 
   function applyAvatar() {
@@ -139,6 +166,19 @@
     return a;
   }
 
+  function syncInstallTip() {
+    if (!installTip || !installTipText || !installTipClose) return;
+
+    installTipText.textContent = textByLang(config.uiText?.installTip)
+      || "Open in Safari and choose Add to Home Screen for a cleaner fullscreen look on iPhone.";
+    installTipClose.setAttribute("aria-label", textByLang(config.uiText?.installClose) || "Dismiss");
+
+    const dismissed = localStorage.getItem(TIP_KEY) === "1";
+    const isiPhone = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+    const shouldShow = isiPhone && !dismissed && !isStandaloneMode();
+    installTip.classList.toggle("hidden", !shouldShow);
+  }
+
   function render() {
     const profile = config.profile || {};
     document.documentElement.lang = currentLanguage === "en" ? "en" : "zh-CN";
@@ -169,10 +209,22 @@
     setTheme(currentTheme === "dark" ? "light" : "dark");
   });
 
+  installTipClose?.addEventListener("click", () => {
+    localStorage.setItem(TIP_KEY, "1");
+    syncInstallTip();
+  });
+
   applyBackground();
   applyAvatar();
+  updateStandaloneClass();
   setTheme(currentTheme);
   render();
+  syncInstallTip();
+
+  window.matchMedia("(display-mode: standalone)").addEventListener?.("change", () => {
+    updateStandaloneClass();
+    syncInstallTip();
+  });
 
   window.addEventListener("load", () => {
     requestAnimationFrame(() => {
@@ -180,4 +232,10 @@
       pageShell.classList.add("ready");
     });
   });
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    });
+  }
 })();
