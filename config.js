@@ -12,7 +12,7 @@ window.SITE_CONFIG = {
       en: "Java backend developer / indie maker explorer / photography and UX enthusiast"
     },
     siteTitle: {
-      zh: "我的主页",
+      zh: "陈得锋的主页",
       en: "Home | Devon Chan"
     }
   },
