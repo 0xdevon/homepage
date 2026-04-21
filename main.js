@@ -81,9 +81,40 @@
     document.documentElement.classList.toggle("is-standalone", isStandaloneMode());
   }
 
+  function isIOS() {
+    return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+  }
+
+  function updatePlatformClasses() {
+    document.documentElement.classList.toggle("is-ios", isIOS());
+    document.documentElement.classList.toggle("is-ios-standalone", isIOS() && isStandaloneMode());
+  }
+
+  function updateAppHeight() {
+    const viewportHeight = window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight;
+    if (!viewportHeight) return;
+    document.documentElement.style.setProperty("--app-height", `${Math.round(viewportHeight)}px`);
+  }
+
+  function syncViewportSize() {
+    updateStandaloneClass();
+    updatePlatformClasses();
+    updateAppHeight();
+  }
+
+  function currentChromeColor() {
+    return currentTheme === "light" ? "#eef4f7" : "#0f1722";
+  }
+
   function updateThemeColor() {
     if (!themeColorMeta) return;
-    themeColorMeta.setAttribute("content", currentTheme === "light" ? "#e7edf5" : "#0f1722");
+    themeColorMeta.setAttribute("content", currentChromeColor());
+  }
+
+  function updateChromeBackground() {
+    const chromeColor = currentChromeColor();
+    document.documentElement.style.backgroundColor = chromeColor;
+    document.body.style.backgroundColor = chromeColor;
   }
 
   function setTheme(theme) {
@@ -97,6 +128,7 @@
       : (textByLang(themeText.themeToLight) || "Switch to light mode");
     themeToggle.setAttribute("aria-label", ariaLabel);
     updateThemeColor();
+    updateChromeBackground();
   }
 
   function setLanguage(lang) {
@@ -119,7 +151,7 @@
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center center";
     document.body.style.backgroundRepeat = "no-repeat";
-    document.body.style.backgroundAttachment = "fixed";
+    document.body.style.backgroundAttachment = "scroll";
   }
 
   function applyAvatar() {
@@ -216,21 +248,39 @@
 
   applyBackground();
   applyAvatar();
-  updateStandaloneClass();
+  syncViewportSize();
   setTheme(currentTheme);
   render();
   syncInstallTip();
 
   window.matchMedia("(display-mode: standalone)").addEventListener?.("change", () => {
-    updateStandaloneClass();
+    syncViewportSize();
     syncInstallTip();
   });
 
+  window.addEventListener("resize", syncViewportSize, { passive: true });
+  window.addEventListener("orientationchange", () => {
+    setTimeout(syncViewportSize, 60);
+    setTimeout(syncViewportSize, 240);
+  }, { passive: true });
+  window.addEventListener("pageshow", () => {
+    syncViewportSize();
+    setTimeout(syncViewportSize, 60);
+    setTimeout(syncViewportSize, 300);
+  });
+  window.visualViewport?.addEventListener?.("resize", syncViewportSize, { passive: true });
+
   window.addEventListener("load", () => {
+    syncViewportSize();
     requestAnimationFrame(() => {
+      syncViewportSize();
       pageShell.classList.remove("is-loading");
       pageShell.classList.add("ready");
     });
+    setTimeout(syncViewportSize, 60);
+    setTimeout(syncViewportSize, 180);
+    setTimeout(syncViewportSize, 360);
+    setTimeout(syncViewportSize, 800);
   });
 
   if ("serviceWorker" in navigator) {

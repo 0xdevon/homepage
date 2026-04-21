@@ -28,7 +28,10 @@
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
+  --app-height: 100dvh;
+  --chrome-bg: #0f1722;
 }
+
 
 html[data-theme="light"] {
   --bg-overlay-1: rgba(235, 241, 248, 0.28);
@@ -48,7 +51,17 @@ html[data-theme="light"] {
   --topbar-bg: linear-gradient(180deg, rgba(255,255,255,0.46), rgba(255,255,255,0.22));
 
   --shadow: 0 22px 60px rgba(44, 60, 82, 0.18);
+  --chrome-bg: #eef4f7;
 }
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
 
 * { box-sizing: border-box; }
 
@@ -59,7 +72,7 @@ html, body {
   height: 100%;
   font-family: "PingFang SC", "PingFang TC", "PingFang HK", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
   font-weight: 400;
-  background: #0f1722;
+  background: var(--chrome-bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -67,21 +80,24 @@ html, body {
 }
 
 body {
+  background-color: var(--chrome-bg);
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
+  min-height: var(--app-height);
   overflow-x: hidden;
   overscroll-behavior-y: none;
   background:
     linear-gradient(to bottom, var(--bg-overlay-1), var(--bg-overlay-2) 30%, var(--bg-overlay-3) 100%),
     url("./assets/bg.svg") center/cover no-repeat;
-  background-attachment: fixed;
+  background-attachment: scroll;
 }
 
 .page-shell {
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
+  min-height: var(--app-height);
   opacity: 1;
 }
 .page-shell.is-loading .fade-item { opacity: 0; transform: translateY(22px) scale(0.985); }
@@ -153,6 +169,7 @@ html[data-theme="light"] .theme-icon--sun { opacity: 1; transform: scale(1); }
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
+  min-height: var(--app-height);
   display: grid;
   place-items: center;
   padding:
@@ -189,6 +206,7 @@ html[data-theme="light"] .hero::before {
   min-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 64px);
   min-height: calc(100svh - var(--safe-top) - var(--safe-bottom) - 64px);
   min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 64px);
+  min-height: calc(var(--app-height) - var(--safe-top) - var(--safe-bottom) - 64px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -479,4 +497,14 @@ html.is-standalone .hero {
 
 @media (max-width: 640px) {
   body { background-attachment: scroll; }
+}
+
+html.is-ios body,
+html.is-ios body::before {
+  background-color: var(--chrome-bg);
+}
+
+html.is-ios-standalone body,
+html.is-ios-standalone .hero {
+  background-attachment: scroll;
 }

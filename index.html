@@ -6,6 +6,20 @@
   <title>Personal Homepage</title>
   <meta name="description" content="Personal homepage" />
   <meta name="theme-color" content="#0f1722" id="themeColorMeta" />
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem("homepage-theme");
+        var fallbackTheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        var theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : fallbackTheme;
+        var chromeColor = theme === "light" ? "#eef4f7" : "#0f1722";
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.backgroundColor = chromeColor;
+        var themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) themeMeta.setAttribute("content", chromeColor);
+      } catch (e) {}
+    })();
+  </script>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -55,6 +69,10 @@
 
         <div class="socials fade-item" id="quickActions"></div>
         <p class="copyright">Copyright © 2026 devonchan.com</p>
+		<div class="install-tip hidden fade-item" id="installTip" role="status" aria-live="polite">
+          <div class="install-tip__text" id="installTipText">建议添加到主屏幕，以获得更接近全屏、无浏览器黑条的效果。</div>
+          <button class="install-tip__close" id="installTipClose" type="button" aria-label="关闭提示">×</button>
+        </div>
       </section>
     </main>
   </div>
