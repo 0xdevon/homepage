@@ -92,5 +92,32 @@ window.SITE_CONFIG = {
       zh: "忽略",
       en: "Dismiss"
     }
-  }
+  },
+
+  newsText: {
+    title: {
+      zh: "最新动态",
+      en: "Latest News"
+    },
+    desc: {
+      zh: "来自我订阅的 RSS 内容",
+      en: "Curated from my RSS subscriptions"
+    },
+    loading: {
+      zh: "正在加载订阅内容…",
+      en: "Loading feeds..."
+    },
+    failed: {
+      zh: "订阅加载失败",
+      en: "Failed to load feeds"
+    }
+  },
+
+  rssFeeds: [
+    { name: "OpenAI", url: "https://openai.com/news/rss.xml" },
+    { name: "GitHub Blog", url: "https://github.blog/feed/" },
+    { name: "Hacker News", url: "https://hnrss.org/frontpage" },
+    { name: "少数派", url: "https://sspai.com/feed" },
+    { name: "Unsplash Blog", url: "https://unsplash.com/blog/feed" }
+  ]
 };

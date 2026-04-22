@@ -59,6 +59,7 @@
   const installTip = document.getElementById("installTip");
   const installTipText = document.getElementById("installTipText");
   const installTipClose = document.getElementById("installTipClose");
+  const copyrightText = document.getElementById("copyrightText");
 
   const THEME_KEY = "homepage-theme";
   const LANG_KEY = "homepage-lang";
@@ -71,6 +72,15 @@
     if (value == null) return "";
     if (typeof value === "string") return value;
     return value[currentLanguage] || value.zh || value.en || "";
+  }
+
+  function escapeHtml(str = "") {
+    return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
   }
 
   function isStandaloneMode() {
@@ -136,6 +146,7 @@
     localStorage.setItem(LANG_KEY, currentLanguage);
     render();
     syncInstallTip();
+    loadNews();
   }
 
   function applyBackground() {
@@ -211,6 +222,50 @@
     installTip.classList.toggle("hidden", !shouldShow);
   }
 
+  async function loadNews() {
+    const newsGrid = document.getElementById("newsGrid");
+    const newsTitle = document.getElementById("newsTitle");
+    const newsDesc = document.getElementById("newsDesc");
+
+    if (!newsGrid) return;
+
+    if (newsTitle) newsTitle.textContent = textByLang(config.newsText?.title) || "Latest News";
+    if (newsDesc) newsDesc.textContent = textByLang(config.newsText?.desc) || "Curated from my RSS subscriptions";
+
+    newsGrid.innerHTML = `<article class="news-placeholder">${
+        textByLang(config.newsText?.loading) || "Loading feeds..."
+    }</article>`;
+
+    try {
+      const response = await fetch("/api/rss");
+      const data = await response.json();
+      const items = Array.isArray(data.items) ? data.items : [];
+
+      if (!items.length) {
+        newsGrid.innerHTML = `<article class="news-placeholder">${
+            textByLang(config.newsText?.failed) || "Failed to load feeds"
+        }</article>`;
+        return;
+      }
+
+      newsGrid.innerHTML = items.map(item => `
+      <article class="news-card">
+        <div class="news-source">${escapeHtml(item.source || "")}</div>
+        <h3 class="news-title">
+          <a href="${escapeHtml(item.link || "#")}" target="_blank" rel="noreferrer">
+            ${escapeHtml(item.title || "")}
+          </a>
+        </h3>
+        <div class="news-meta">${escapeHtml(item.pubDate || "")}</div>
+      </article>
+    `).join("");
+    } catch (error) {
+      newsGrid.innerHTML = `<article class="news-placeholder">${
+          textByLang(config.newsText?.failed) || "Failed to load feeds"
+      }</article>`;
+    }
+  }
+
   function render() {
     const profile = config.profile || {};
     document.documentElement.lang = currentLanguage === "en" ? "en" : "zh-CN";
@@ -230,6 +285,9 @@
     });
 
     langToggle.textContent = textByLang(config.uiText?.langToggle) || "EN";
+    if (copyrightText && config.copyright) {
+      copyrightText.textContent = textByLang(config.copyright);
+    }
     setTheme(currentTheme);
   }
 
@@ -252,6 +310,7 @@
   setTheme(currentTheme);
   render();
   syncInstallTip();
+  loadNews();
 
   window.matchMedia("(display-mode: standalone)").addEventListener?.("change", () => {
     syncViewportSize();
