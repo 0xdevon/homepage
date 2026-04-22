@@ -86,7 +86,7 @@ window.SITE_CONFIG = {
       en: "Dark mode"
     },
     installTip: {
-      zh: "在 iPhone 上想获得更接近全屏、无浏览器黑条的效果：请在 Safari 中打开后，点击“分享” → “添加到主屏幕”。",
+      zh: "如需在iPhone上获得更接近全屏、无浏览器黑条的效果，请在Safari中点击“分享” → “添加到主屏幕”。",
       en: "For a cleaner fullscreen look on iPhone, open this page in Safari, tap Share, then choose Add to Home Screen."
     },
     installClose: {

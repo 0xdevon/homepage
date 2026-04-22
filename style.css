@@ -21,8 +21,8 @@
   --radius-lg: 18px;
 
   --page-padding: 32px 20px;
-  --content-width: 880px;
-  --card-width: 460px;
+  --content-width: 920px;
+  --card-width: 920px;
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
@@ -261,7 +261,7 @@ h1 {
 }
 
 .card {
-  width: min(100%, var(--card-width));
+  width: 100%;
   padding: 18px;
   border-radius: var(--radius-xl);
   background: var(--card-bg);
@@ -510,7 +510,7 @@ html.is-ios-standalone .hero {
 }
 
 .news-section {
-  width: min(100%, 920px);
+  width: 100%;
   margin-top: 28px;
   padding: 20px;
   border-radius: 28px;
