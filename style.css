@@ -89,7 +89,7 @@ body {
   overscroll-behavior-y: none;
   background:
     linear-gradient(to bottom, var(--bg-overlay-1), var(--bg-overlay-2) 30%, var(--bg-overlay-3) 100%),
-    url("./assets/bg.svg") center/cover no-repeat;
+    url("./assets/bg.jpg") center/cover no-repeat;
   background-attachment: scroll;
 }
 
@@ -179,7 +179,7 @@ html[data-theme="light"] .theme-icon--sun { opacity: 1; transform: scale(1); }
     calc(20px + var(--safe-left));
   background:
     linear-gradient(to bottom, var(--bg-overlay-1), var(--bg-overlay-2) 30%, var(--bg-overlay-3) 100%),
-    url("./assets/bg.svg") center/cover no-repeat;
+    url("./assets/bg.jpg") center/cover no-repeat;
   overflow: hidden;
 }
 .hero::before {
