@@ -18,6 +18,7 @@ window.SITE_CONFIG = {
   },
 
   backgroundImage: "./assets/bg.jpg",
+  backgroundImageMobile: "./assets/bg-mobile.jpg",
   avatarImage: "./assets/avatar.JPG",
 
   links: [

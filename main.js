@@ -150,18 +150,27 @@
   }
 
   function applyBackground() {
-    if (!config.backgroundImage) return;
+    const desktopBg = config.profile?.backgroundImage;
+    const mobileBg = config.profile?.backgroundImageMobile || desktopBg;
+    const isMobile = window.innerWidth <= 768;
+    const bg = isMobile ? mobileBg : desktopBg;
+
+    if (!bg) return;
 
     const backgroundValue = `
-      linear-gradient(to bottom, var(--bg-overlay-1), var(--bg-overlay-2) 30%, var(--bg-overlay-3) 100%),
-      url("${config.backgroundImage}")
-    `;
+    linear-gradient(to bottom, var(--bg-overlay-1), var(--bg-overlay-2) 30%, var(--bg-overlay-3) 100%),
+    url("${bg}")
+  `;
 
     hero.style.backgroundImage = backgroundValue;
+    hero.style.backgroundSize = "cover";
+    hero.style.backgroundRepeat = "no-repeat";
+    hero.style.backgroundPosition = isMobile ? "center top" : "center center";
+
     document.body.style.backgroundImage = backgroundValue;
     document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center center";
     document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundPosition = isMobile ? "center top" : "center center";
     document.body.style.backgroundAttachment = "scroll";
   }
 
@@ -317,7 +326,10 @@
     syncInstallTip();
   });
 
-  window.addEventListener("resize", syncViewportSize, { passive: true });
+  window.addEventListener("resize", () => {
+    applyBackground();
+    syncViewportSize();
+  }, { passive: true });
   window.addEventListener("orientationchange", () => {
     setTimeout(syncViewportSize, 60);
     setTimeout(syncViewportSize, 240);
