@@ -115,10 +115,10 @@ window.SITE_CONFIG = {
   },
 
   rssFeeds: [
-    { name: "OpenAI", url: "https://openai.com/news/rss.xml" },
-    { name: "GitHub Blog", url: "https://github.blog/feed/" },
-    { name: "Hacker News", url: "https://hnrss.org/frontpage" },
     { name: "少数派", url: "https://sspai.com/feed" },
-    { name: "Unsplash Blog", url: "https://unsplash.com/blog/feed" }
+    { name: "阮一峰", url: "http://www.ruanyifeng.com/blog/atom.xml" },
+    { name: "爱范儿", url: "https://www.ifanr.com/feed" },
+    { name: "OpenAI", url: "https://openai.com/news/rss.xml" },
+    { name: "Hacker News", url: "https://hnrss.org/frontpage" }
   ]
 };
