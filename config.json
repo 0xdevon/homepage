@@ -71,7 +71,7 @@
   ],
   "rss": {
     "title": "新闻资讯",
-    "description": "来自「IT之家」、「Leica中文摄影杂志」、「理想生活实验室」",
+    "description": "来自「IT之家」、「Photo Review」、「理想生活实验室」",
     "maxItems": 36,
     "pageSize": 4,
     "timeoutMs": 9000,
