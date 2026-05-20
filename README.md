@@ -1,86 +1,262 @@
-# Cloudflare Pages 个人主页项目
+# Personal Homepage iOS26 Style
 
-新增：
-- PWA 安装支持
-- Service Worker 离线缓存
-- iPhone 主屏幕图标与 Apple Touch Icon
-- 更完整的 `manifest.webmanifest`
-- iPhone 非主屏访问时的安装提示
-- 主屏模式下更贴近全屏展示
+一个简约个人主页模板，支持：
 
-## 目录结构
+- PC 端左侧个人卡片 + 右侧 RSS 信息流
+- 移动端自动单列布局
+- 深色 / 浅色模式切换
+- 毛玻璃、圆角卡片、浅色系配色
+- 通过 `config.json` 配置个人信息、社交图标、背景图和 RSS 源
+- 附带 Cloudflare Worker RSS 代理，解决浏览器跨域读取 RSS 的问题
+
+## 项目结构
 
 ```text
-personal-homepage-cf-pages-v9/
+personal-homepage-ios26/
 ├── index.html
-├── style.css
-├── main.js
-├── config.js
-├── service-worker.js
-├── manifest.webmanifest
-└── assets/
-    ├── bg.svg
-    ├── avatar.svg
-    ├── icons/
-    │   ├── github.png
-    │   ├── x.png
-    │   ├── weibo.png
-    │   ├── xiaohongshu.png
-    │   └── blog.png
-    └── pwa/
-        ├── apple-touch-icon.png
-        ├── icon-192.png
-        ├── icon-512.png
-        └── favicon-32.png
+├── config.json
+├── assets/
+│   ├── css/styles.css
+│   ├── js/app.js
+│   ├── icons/
+│   └── images/background.svg
+├── functions/
+│   └── rss-proxy.js
+└── workers/rss-proxy-worker.js
 ```
+
+## 本地预览
+
+不要直接双击 `index.html`，因为浏览器可能禁止直接读取 `config.json`。
+
+推荐在项目根目录执行：
+
+```bash
+python3 -m http.server 8080
+```
+
+然后访问：
+
+```text
+http://localhost:8080
+```
+
+## 修改个人信息
+
+编辑 `config.json`：
+
+```json
+"profile": {
+  "name": "Devon Chan",
+  "initials": "DC",
+  "role": "Developer · Creator · Photographer",
+  "intro": "这里是我的个人入口页...",
+  "status": "Currently building personal projects",
+  "avatar": ""
+}
+```
+
+如果要使用头像，把头像放到 `assets/images/`，然后配置：
+
+```json
+"avatar": "assets/images/avatar.jpg"
+```
+
+## 配置社交媒体入口和图标
+
+编辑 `socialLinks`：
+
+```json
+{
+  "name": "GitHub",
+  "description": "github.com/yourname",
+  "url": "https://github.com/yourname",
+  "icon": "assets/icons/github.svg"
+}
+```
+
+图标可以是：
+
+- 本地 SVG/PNG：`assets/icons/github.svg`
+- 远程图片 URL：`https://example.com/icon.svg`
+- SVG 字符串：`"icon": "<svg viewBox=\"0 0 24 24\" ...></svg>"`
+- 独立 SVG 字符串字段：`"iconSvg": "<svg ...></svg>"`
+- 如果不写 `icon`，可以用 `emoji` 字段替代
+
+当前版本已内置 `Unsplash` 和 `微博` 两个社交入口示例，它们使用的就是 SVG 字符串形式，后续可以直接在 `config.json > socialLinks` 里替换。
+
+## 配置背景图
+
+编辑 `background`：
+
+```json
+"background": {
+  "image": "assets/images/background.svg",
+  "opacity": 0.36,
+  "blur": 0,
+  "position": "center",
+  "size": "cover"
+}
+```
+
+如果你想换成摄影背景，把图片放到：
+
+```text
+assets/images/background.jpg
+```
+
+然后改成：
+
+```json
+"image": "assets/images/background.jpg",
+"opacity": 0.28,
+"blur": 0,
+"position": "center",
+"size": "cover"
+```
+
+## 配置 RSS 源
+
+编辑 `rss.sources`：
+
+```json
+"sources": [
+  {
+    "name": "少数派",
+    "category": "tech",
+    "url": "https://sspai.com/feed"
+  },
+  {
+    "name": "你的博客",
+    "category": "life",
+    "url": "https://your-blog.com/rss.xml"
+  }
+]
+```
+
+分类需要和 `rss.categories` 中的 `id` 对应。
+
+## 关于 RSS 跨域问题
+
+大多数 RSS 源不允许浏览器直接跨域读取。项目默认把 `config.json > rss.proxyEndpoint` 设置为 `/rss-proxy`，部署到 Cloudflare Pages 后会使用 `functions/rss-proxy.js` 作为同源代理读取真实 RSS。
+
+`fallbackItems` 只作为兜底占位：只要任意一个配置的 RSS 源成功返回内容，页面就会展示真实 RSS；只有所有 RSS 源都失败或都没有解析到条目时，才会展示 `fallbackItems`。
+
+本地如果使用 `python3 -m http.server` 预览，Cloudflare Pages Functions 不会运行，所以 `/rss-proxy` 会不可用，此时页面会进入 fallback 占位。这是本地静态服务器限制，不代表线上 Pages 部署后的真实 RSS 加载失败。
+
+### 可选：独立部署 Worker
+
+如果你不想使用 Pages Functions，也可以新建一个 Cloudflare Worker：
+
+1. 新建一个 Cloudflare Worker
+2. 把 `workers/rss-proxy-worker.js` 内容复制进去
+3. 部署后得到一个地址，例如：
+
+```text
+https://rss-proxy.yourname.workers.dev/
+```
+
+4. 回到 `config.json`，设置：
+
+```json
+"proxyEndpoint": "https://rss-proxy.yourname.workers.dev/"
+```
+
+如果把 `proxyEndpoint` 留空，页面会尝试直接读取 RSS；由于跨域限制，很多源会读取失败，最终可能进入 fallback 占位。
 
 ## 部署到 Cloudflare Pages
 
-- Framework preset: `None`
-- Build command: 留空
-- Build output directory: `/`
+把整个文件夹推送到 GitHub，然后在 Cloudflare Pages 里选择该仓库：
 
-## 你通常只需要修改
+- Build command：留空
+- Build output directory：`/`
 
-### 1) `config.js`
-改这些内容：
-- 中英文姓名
-- 中英文简介
-- 背景图路径
-- 头像路径
-- GitHub / X / 微博 / 小红书 / 博客链接
-- 电话 / 信息 / 邮箱
-- iPhone 安装提示文案
+也可以直接拖拽整个项目文件夹到 Pages 的上传部署页面。
 
-### 2) `assets/`
-如需替换背景图或头像，直接覆盖文件并修改 `config.js` 路径。
+## 常用替换位置
 
-### 3) `assets/pwa/`
-如果你想换成自己的主屏图标，替换这几个 PNG 即可。
-
-## 字体说明
-
-本项目会优先使用：
-- `PingFang SC`
-- `PingFang TC`
-- `PingFang HK`
-
-如果访问设备本身没有苹方，浏览器才会回退到系统备用字体。
-
-## iPhone 使用说明
-
-在普通浏览器里，顶部状态栏和底部工具栏属于浏览器自身 UI，网页本身无法完全消除。
-
-要获得更接近“整屏无黑条”的效果：
-1. 用 Safari 打开页面
-2. 点击“分享”
-3. 选择“添加到主屏幕”
-4. 从主屏图标进入
-
-这版已经为该方式补齐了必要的 PWA 资源与配置。
+- 个人名称：`config.json > profile.name`
+- 网站标题：`config.json > site.title`
+- 社交链接：`config.json > socialLinks`
+- 背景图：`config.json > background.image`
+- RSS 源：`config.json > rss.sources`
+- RSS 代理：`config.json > rss.proxyEndpoint`
 
 
-## v10 修复
-- 修复 PC 端因 `-webkit-fill-available` 导致的首屏高度异常
-- 统一改为 `100vh / 100svh / 100dvh` 组合
-- 将页面背景同步到 `body`，避免可视区外露底
+
+## 头像显示说明
+
+`profile.avatar` 为空时，只显示 initials 生成的默认头像；配置头像图片路径后，只显示真实头像。当前版本已修复头像图片和默认头像同时出现的问题。
+
+## v3 修复说明
+
+- 修复未配置头像或头像路径失效时可能同时显示 broken image 与默认 initials 头像的问题。
+- 现在头像区域只保留一个 `.avatar` 容器：`profile.avatar` 为空时显示 `profile.initials`；配置头像且加载成功后才替换为图片。
+
+## v4 部署说明：config.json 加载失败的处理
+
+如果页面显示 `config.json 加载失败`，通常不是代码问题，而是部署目录不对：`config.json` 没有和 `index.html` 部署在同一层。
+
+### Cloudflare Pages 命令部署
+
+请进入项目根目录后再执行：
+
+```bash
+cd personal-homepage-ios26
+npx wrangler pages deploy . --project-name=你的Pages项目名
+```
+
+部署后直接访问：
+
+```text
+https://你的域名/config.json
+```
+
+如果这里返回 JSON，说明配置文件已经部署成功。
+
+### Cloudflare Workers 静态资源部署
+
+v4 已内置 `wrangler.jsonc`，如果你希望使用 Workers 静态资源方式，可以在项目根目录执行：
+
+```bash
+cd personal-homepage-ios26
+npx wrangler deploy
+```
+
+注意：不要在解压后的上一级目录执行部署命令，否则可能只上传外层目录，导致 `/config.json` 访问不到。
+
+## SVG 图标颜色说明
+
+如果你的 `config.json` 中直接使用 SVG 字符串，页面会默认把 SVG 中写死的纯白/纯黑 `fill` 或 `stroke` 转换成 `currentColor`，这样在浅色、深色模式下都能保持清晰可见。
+
+单个社交链接可额外配置：
+
+```json
+{
+  "name": "GitHub",
+  "url": "https://github.com/yourname",
+  "icon": "<svg>...</svg>",
+  "iconColor": "#172033",
+  "iconBackground": "rgba(255,255,255,0.72)"
+}
+```
+
+如果你希望保留 SVG 原本的品牌色，不希望自动改色，可以设置：
+
+```json
+{
+  "preserveIconColor": true
+}
+```
+
+## v8 图标颜色修复说明
+
+如果你在 `config.json` 中使用阿里 Iconfont 或其他 SVG 字符串，很多 SVG 会写死 `fill="#ffffff"`。v8 会自动将纯白/纯黑 SVG 颜色归一为 `currentColor`，并在 CSS 层同时覆盖 SVG 根节点和子节点的 `fill/stroke`。浅色模式下图标底座也加入了轻微冷色对比，避免左侧图标和白色毛玻璃背景融合。
+
+若你希望某个图标保留品牌色，可在对应 `socialLinks` 项中增加：
+
+```json
+"preserveIconColor": true
+```
+
+如果部署后仍看到旧样式，请强制刷新浏览器缓存：`Command + Shift + R`。

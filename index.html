@@ -1,83 +1,70 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Personal Homepage</title>
-  <meta name="description" content="Personal homepage" />
-  <meta name="theme-color" content="#0f1722" id="themeColorMeta" />
-  <script>
-    (function () {
-      try {
-        var savedTheme = localStorage.getItem("homepage-theme");
-        var fallbackTheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-        var theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : fallbackTheme;
-        var chromeColor = theme === "light" ? "#eef4f7" : "#0f1722";
-        document.documentElement.setAttribute("data-theme", theme);
-        document.documentElement.style.backgroundColor = chromeColor;
-        var themeMeta = document.querySelector('meta[name="theme-color"]');
-        if (themeMeta) themeMeta.setAttribute("content", chromeColor);
-      } catch (e) {}
-    })();
-  </script>
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Homepage" />
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="apple-touch-icon" sizes="180x180" href="./assets/pwa/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/pwa/favicon-32.png" />
-  <link rel="stylesheet" href="./style.css" />
+  <meta name="theme-color" content="#f6f7fb" />
+  <title>Homepage</title>
+  <link rel="stylesheet" href="assets/css/styles.css?v=11" />
 </head>
 <body>
-  <div class="page-shell is-loading" id="pageShell">
-    <header class="topbar fade-item">
-      <div class="topbar-actions">
-        <button class="ghost-btn ghost-btn--lang" id="langToggle" type="button" aria-label="切换语言">EN</button>
-        <button class="ghost-btn ghost-btn--theme" id="themeToggle" type="button" aria-label="切换主题">
-          <span class="theme-icon theme-icon--sun" id="themeSun" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="4.2"></circle>
-              <path d="M12 1.8v2.4"></path>
-              <path d="M12 19.8v2.4"></path>
-              <path d="M4.79 4.79l1.7 1.7"></path>
-              <path d="M17.51 17.51l1.7 1.7"></path>
-              <path d="M1.8 12h2.4"></path>
-              <path d="M19.8 12h2.4"></path>
-              <path d="M4.79 19.21l1.7-1.7"></path>
-              <path d="M17.51 6.49l1.7-1.7"></path>
-            </svg>
-          </span>
-          <span class="theme-icon theme-icon--moon" id="themeMoon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.4 14.2A8.7 8.7 0 0 1 9.8 3.6 9.2 9.2 0 1 0 20.4 14.2Z"></path>
-            </svg>
-          </span>
-        </button>
+  <main class="shell">
+    <aside class="sidebar glass fade-in">
+      <div class="profile-top">
+        <div class="avatar" id="profileAvatar" aria-label="Avatar">DC</div>
+        <div class="name-wrap">
+          <h1 id="profileName">Devon Chan</h1>
+          <p id="profileRole">Developer · Photographer</p>
+        </div>
       </div>
-    </header>
 
-    <main class="hero" id="hero">
-      <section class="content">
-        <div class="avatar fade-item" id="avatar" aria-label="avatar"></div>
-        <h1 class="fade-item" id="name">Your Name</h1>
-        <p class="subtitle fade-item" id="bio">Your short bio here.</p>
+      <p class="intro" id="profileIntro">
+        这里是我的个人入口页，收纳博客、社交媒体、联系方式，以及我关注的技术与资讯订阅。
+      </p>
 
-        <div class="card fade-item">
-          <div class="links" id="socialLinks"></div>
+      <div class="status">
+        <span class="dot"></span>
+        <span id="profileStatus">Currently building personal projects</span>
+      </div>
+
+      <div class="section-title">联系我</div>
+      <div class="social-grid" id="socialGrid"></div>
+
+      <button class="theme-btn" id="themeToggle" type="button" aria-label="切换深色/浅色模式">
+        <span id="themeIcon">☀︎</span>
+        <span id="themeText">浅色模式</span>
+      </button>
+    </aside>
+
+    <section class="main">
+      <header class="hero glass fade-in" style="animation-delay: 80ms;">
+        <div class="hero-content">
+          <div class="eyebrow" id="heroEyebrow">✦ Personal Homepage · RSS Dashboard</div>
+          <h2 id="heroTitle">简约、清晰、带一点 iOS 风格的个人主页。</h2>
+          <p id="heroDescription">
+            左侧作为个人名片和社交跳转入口，右侧展示 RSS 信息流。PC 端保持分栏阅读，移动端自动变成单列卡片布局。
+          </p>
+        </div>
+      </header>
+
+      <section class="rss-panel glass fade-in" style="animation-delay: 140ms;">
+        <div class="panel-head">
+          <div>
+            <h3 id="rssTitle">RSS News</h3>
+            <p id="rssDescription">这里可以接入你的博客、技术资讯、摄影资讯或中文新闻源。</p>
+          </div>
+          <div class="feed-tabs" id="feedTabs" role="tablist" aria-label="RSS 分类"></div>
         </div>
 
-        <div class="socials fade-item" id="quickActions"></div>
-        <p class="copyright">Copyright © 2026 devonchan.com</p>
-		<div class="install-tip hidden fade-item" id="installTip" role="status" aria-live="polite">
-          <div class="install-tip__text" id="installTipText">建议添加到主屏幕，以获得更接近全屏、无浏览器黑条的效果。</div>
-          <button class="install-tip__close" id="installTipClose" type="button" aria-label="关闭提示">×</button>
+        <div class="rss-list" id="rssList">
+          <div class="empty-state">RSS 加载中...</div>
         </div>
       </section>
-    </main>
-  </div>
 
-  <script src="./config.js"></script>
-  <script src="./main.js"></script>
+      <footer class="footer" id="footerText">Copyright © 2026 devonchan.com</footer>
+    </section>
+  </main>
+
+  <script src="assets/js/app.js?v=11"></script>
 </body>
 </html>
