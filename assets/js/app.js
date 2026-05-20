@@ -10,6 +10,13 @@ let allRssItems = [];
 let activeFilter = 'all';
 let rssPageSize = 6;
 let rssVisibleCounts = {};
+const themeIcons = {
+  light: `
+    <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M269.696 205.76l-12.224-12.288a43.008 43.008 0 0 0-61.12 0 43.776 43.776 0 0 0 0 61.632l12.288 12.352a43.008 43.008 0 0 0 61.056 0 43.776 43.776 0 0 0 0-61.696zM145.088 470.848h-40a41.088 41.088 0 0 0 0 82.24h40a41.088 41.088 0 0 0 0-82.24zM512 64a40.704 40.704 0 0 0-40.704 40.704v37.76a40.704 40.704 0 0 0 81.408 0v-37.76A40.704 40.704 0 0 0 512 64z m315.648 129.472a43.008 43.008 0 0 0-61.12 0l-14.272 14.336a40.896 40.896 0 0 0 0 57.6c16 16.064 41.792 16.832 58.624 1.6l15.104-13.632a41.408 41.408 0 0 0 1.664-59.904z m-75.392 622.72l16.32 16.384a40.192 40.192 0 0 0 57.024 0 40.832 40.832 0 0 0 0-57.536l-16.256-16.448a40.192 40.192 0 0 0-57.088 0 40.896 40.896 0 0 0 0 57.6z m126.656-263.104h40a41.088 41.088 0 0 0 0-82.24h-40a41.088 41.088 0 0 0 0 82.24zM512 960a40.704 40.704 0 0 0 40.704-40.704v-37.76a40.704 40.704 0 0 0-81.408 0v37.76c0 22.464 18.24 40.704 40.704 40.704z m-315.648-129.536a43.008 43.008 0 0 0 61.12 0l14.272-14.336a40.896 40.896 0 0 0 0-57.536 42.432 42.432 0 0 0-58.56-1.664l-15.104 13.696a41.408 41.408 0 0 0-1.728 59.84zM512 265.344c-134.4 0-244.352 111.04-244.352 246.592 0 135.68 109.952 246.592 244.352 246.592S756.48 647.552 756.48 512c0-135.552-109.952-246.592-244.416-246.592" fill="#2c2c2c"></path>
+    </svg>
+  `
+};
 
 function setText(id, text) {
   const el = document.getElementById(id);
@@ -154,7 +161,13 @@ function applyTheme(theme) {
   root.setAttribute('data-theme', theme);
   localStorage.setItem('theme', theme);
   const isDark = theme === 'dark';
-  themeIcon.textContent = isDark ? '☾' : '☀︎';
+  if (isDark) {
+    themeIcon.removeAttribute('class');
+    themeIcon.textContent = '☾';
+  } else {
+    themeIcon.className = 'theme-icon';
+    themeIcon.innerHTML = themeIcons.light;
+  }
   themeText.textContent = isDark ? '深色模式' : '浅色模式';
   document.querySelector('meta[name="theme-color"]').setAttribute('content', isDark ? '#0d1118' : '#f6f7fb');
 }
