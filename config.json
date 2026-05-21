@@ -9,14 +9,14 @@
     "name": "Devon Chan",
     "initials": "DC",
     "role": "Developer · Photographer",
-    "intro": "网络自留地，欢迎来这些地方找我👇",
+    "intro": "Hi~ 朋友，欢迎来这些地方找我👇",
     "status": "持续沉迷Vibe Coding中...",
     "avatar": "assets/images/IMG_4297-3.4.JPG"
   },
   "hero": {
-    "eyebrow": "✦ Build Systems. Capture Moments.",
+    "eyebrow": "✦ Personal Hub · RSS Dashboard",
     "title": "\" 無限進步",
-    "description": "这里记录我的开发实践、摄影作品、阅读订阅与一些正在构建的个人项目。保持简洁，持续更新。"
+    "description": "收纳我的博客、社交媒体、联系方式，以及一些我正在关注的技术、摄影与生活资讯。"
   },
   "background": {
     "image": "assets/images/background.svg",
