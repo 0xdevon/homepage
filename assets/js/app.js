@@ -186,7 +186,9 @@ function initTheme(defaultTheme = 'system') {
 
 function applyBackground(config) {
   if (!config?.image) return;
-  root.style.setProperty('--background-image', `url("${config.image}")`);
+  const backgroundUrl = new URL(config.image, document.baseURI);
+  backgroundUrl.searchParams.set('v', config.version || Date.now());
+  root.style.setProperty('--background-image', `url("${backgroundUrl.toString()}")`);
   root.style.setProperty('--background-opacity', String(config.opacity ?? 0.36));
   root.style.setProperty('--background-blur', `${config.blur ?? 0}px`);
   root.style.setProperty('--background-position', config.position || 'center');

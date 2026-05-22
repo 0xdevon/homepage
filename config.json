@@ -20,7 +20,7 @@
   },
   "background": {
     "image": "assets/images/background.jpg",
-    "opacity": 0.36,
+    "opacity": 0.8,
     "blur": 0,
     "position": "center",
     "size": "cover"
