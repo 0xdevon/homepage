@@ -446,6 +446,19 @@ html[data-theme="light"] .theme-icon {
   flex-direction: column;
 }
 
+@media (min-width: 901px) {
+  .main {
+    min-height: calc(100vh - 68px);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .rss-panel {
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+  }
+}
+
 .panel-head {
   position: relative;
   z-index: 1;
