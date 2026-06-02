@@ -598,6 +598,16 @@ html[data-theme="dark"] .rss-more {
   line-height: 1.65;
 }
 
+.rss-item p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  line-clamp: 3;
+  max-height: calc(1.65em * 3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .footer {
   color: rgba(23, 32, 51, 0.72);
   font-size: 12px;
