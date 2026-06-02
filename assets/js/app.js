@@ -438,18 +438,29 @@ async function loadRss(config) {
       throw new Error(`${source.name || source.url} returned no RSS items`);
     }
 
-    return items;
+    return items.slice(0, rssConfig.maxItems || 36);
   }));
 
-  allRssItems = results
+  const fetchedItems = results
     .filter(result => result.status === 'fulfilled')
     .flatMap(result => result.value)
-    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-    .slice(0, rssConfig.maxItems || 36);
+    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+
+  const configuredCategories = new Set(sources.map(source => source.category).filter(Boolean));
+  const loadedCategories = new Set(fetchedItems.map(item => item.category));
+  const missingCategories = [...configuredCategories].filter(category => !loadedCategories.has(category));
+  const fallbackItems = (rssConfig.fallbackItems || []).map(item => normalizeItem(item));
+  const categoryFallbackItems = fallbackItems.filter(item => missingCategories.includes(item.category));
+
+  if (categoryFallbackItems.length) {
+    console.warn('Some RSS categories failed or returned no items. Rendering category fallbackItems.', missingCategories, results);
+  }
+
+  allRssItems = [...fetchedItems, ...categoryFallbackItems];
 
   if (!allRssItems.length) {
     console.warn('All RSS sources failed. Rendering fallbackItems as placeholders.', results);
-    allRssItems = (rssConfig.fallbackItems || []).map(item => normalizeItem(item));
+    allRssItems = fallbackItems;
   }
 
   rssVisibleCounts = {};
