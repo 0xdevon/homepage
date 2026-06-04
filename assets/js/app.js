@@ -12,7 +12,7 @@ let rssPageSize = 6;
 let rssVisibleCounts = {};
 const themeIcons = {
   light: `
-    <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
       <path d="M269.696 205.76l-12.224-12.288a43.008 43.008 0 0 0-61.12 0 43.776 43.776 0 0 0 0 61.632l12.288 12.352a43.008 43.008 0 0 0 61.056 0 43.776 43.776 0 0 0 0-61.696zM145.088 470.848h-40a41.088 41.088 0 0 0 0 82.24h40a41.088 41.088 0 0 0 0-82.24zM512 64a40.704 40.704 0 0 0-40.704 40.704v37.76a40.704 40.704 0 0 0 81.408 0v-37.76A40.704 40.704 0 0 0 512 64z m315.648 129.472a43.008 43.008 0 0 0-61.12 0l-14.272 14.336a40.896 40.896 0 0 0 0 57.6c16 16.064 41.792 16.832 58.624 1.6l15.104-13.632a41.408 41.408 0 0 0 1.664-59.904z m-75.392 622.72l16.32 16.384a40.192 40.192 0 0 0 57.024 0 40.832 40.832 0 0 0 0-57.536l-16.256-16.448a40.192 40.192 0 0 0-57.088 0 40.896 40.896 0 0 0 0 57.6z m126.656-263.104h40a41.088 41.088 0 0 0 0-82.24h-40a41.088 41.088 0 0 0 0 82.24zM512 960a40.704 40.704 0 0 0 40.704-40.704v-37.76a40.704 40.704 0 0 0-81.408 0v37.76c0 22.464 18.24 40.704 40.704 40.704z m-315.648-129.536a43.008 43.008 0 0 0 61.12 0l14.272-14.336a40.896 40.896 0 0 0 0-57.536 42.432 42.432 0 0 0-58.56-1.664l-15.104 13.696a41.408 41.408 0 0 0-1.728 59.84zM512 265.344c-134.4 0-244.352 111.04-244.352 246.592 0 135.68 109.952 246.592 244.352 246.592S756.48 647.552 756.48 512c0-135.552-109.952-246.592-244.416-246.592" fill="#2c2c2c"></path>
     </svg>
   `
@@ -72,7 +72,12 @@ function sanitizeInlineSvg(value = '', options = {}) {
   const svg = template.content.querySelector('svg');
   if (!svg) return '';
 
-  svg.querySelectorAll('script, foreignObject, iframe, object, embed').forEach(node => node.remove());
+  svg.querySelectorAll('*').forEach(node => {
+    const tagName = node.localName.toLowerCase();
+    if (['script', 'foreignobject', 'iframe', 'object', 'embed'].includes(tagName)) {
+      node.remove();
+    }
+  });
 
   [svg, ...svg.querySelectorAll('*')].forEach(node => {
     [...node.attributes].forEach(attr => {
@@ -273,14 +278,24 @@ function renderTabs(categories = []) {
   });
 }
 
+function getXmlText(node, tagName) {
+  return node.getElementsByTagName(tagName)[0]?.textContent || '';
+}
+
+function getXmlLink(node) {
+  const links = [...node.getElementsByTagName('link')];
+  const hrefLink = links.find(link => link.hasAttribute('href'));
+  return hrefLink?.getAttribute('href') || links[0]?.textContent || '';
+}
+
 function normalizeItem(item, source = {}) {
   return {
-    title: stripHtml(item.title || item.querySelector?.('title')?.textContent || 'Untitled'),
-    link: item.link || item.querySelector?.('link')?.textContent || item.querySelector?.('guid')?.textContent || '#',
+    title: stripHtml(item.title || getXmlText(item, 'title') || 'Untitled'),
+    link: item.link || getXmlLink(item) || getXmlText(item, 'guid') || '#',
     source: item.source || source.name || 'RSS',
     category: item.category || source.category || 'all',
-    publishedAt: item.publishedAt || item.pubDate || item.isoDate || item.querySelector?.('pubDate')?.textContent || item.querySelector?.('updated')?.textContent || '',
-    summary: stripHtml(item.summary || item.contentSnippet || item.description || item.querySelector?.('description')?.textContent || '')
+    publishedAt: item.publishedAt || item.pubDate || item.isoDate || getXmlText(item, 'pubDate') || getXmlText(item, 'updated') || '',
+    summary: stripHtml(item.summary || item.contentSnippet || item.description || getXmlText(item, 'description') || '')
   };
 }
 
@@ -321,6 +336,16 @@ function setupRssLazyLoading() {
   rssList.addEventListener('scroll', maybeLoadMoreRssItems, { passive: true });
   window.addEventListener('scroll', maybeLoadMoreRssItems, { passive: true });
   window.addEventListener('resize', maybeLoadMoreRssItems);
+}
+
+function initPwa() {
+  if (!('serviceWorker' in navigator) || window.location.protocol === 'file:') return;
+
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(error => {
+      console.warn('Service worker registration failed:', error);
+    });
+  });
 }
 
 function renderRssItems(items = []) {
@@ -372,22 +397,21 @@ async function fetchWithTimeout(url, timeoutMs) {
 
 function parseRssXml(xmlText, source) {
   const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
-  const rssItems = [...doc.querySelectorAll('item')];
-  const atomItems = [...doc.querySelectorAll('entry')];
+  const rssItems = [...doc.getElementsByTagName('item')];
+  const atomItems = [...doc.getElementsByTagName('entry')];
 
   if (rssItems.length) {
     return rssItems.map(item => normalizeItem(item, source));
   }
 
   return atomItems.map(entry => {
-    const linkNode = entry.querySelector('link[href]');
     return {
-      title: stripHtml(entry.querySelector('title')?.textContent || 'Untitled'),
-      link: linkNode?.getAttribute('href') || entry.querySelector('link')?.textContent || '#',
+      title: stripHtml(getXmlText(entry, 'title') || 'Untitled'),
+      link: getXmlLink(entry) || '#',
       source: source.name || 'RSS',
       category: source.category || 'all',
-      publishedAt: entry.querySelector('published')?.textContent || entry.querySelector('updated')?.textContent || '',
-      summary: stripHtml(entry.querySelector('summary')?.textContent || entry.querySelector('content')?.textContent || '')
+      publishedAt: getXmlText(entry, 'published') || getXmlText(entry, 'updated') || '',
+      summary: stripHtml(getXmlText(entry, 'summary') || getXmlText(entry, 'content') || '')
     };
   });
 }
@@ -419,19 +443,18 @@ async function loadRss(config) {
     let items = [];
 
     // Worker 代理默认返回 JSON，静态直连则返回 XML。
+    let json;
     try {
-      const json = JSON.parse(text);
-      if (Array.isArray(json.items)) {
-        items = json.items.map(item => normalizeItem({ ...item, category: item.category || source.category, source: item.source || source.name }, source));
-      } else if (json.error) {
-        throw new Error(json.error);
-      }
+      json = JSON.parse(text);
     } catch (error) {
-      if (error instanceof SyntaxError) {
-        items = parseRssXml(text, source);
-      } else {
-        throw error;
+      if (json) {
+        if (Array.isArray(json.items)) {
+          items = json.items.map(item => normalizeItem({ ...item, category: item.category || source.category, source: item.source || source.name }, source));
+        } else if (json.error) {
+          throw new Error(json.error);
+        }
       }
+
     }
 
     if (!items.length) {
@@ -527,4 +550,5 @@ async function init() {
   loadRss(config);
 }
 
+initPwa();
 init();

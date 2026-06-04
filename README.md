@@ -1,10 +1,11 @@
-# Personal Homepage iOS26 Style
+# Personal Homepage (iOS26 Style)
 
 一个简约个人主页模板，支持：
 
 - PC 端左侧个人卡片 + 右侧 RSS 信息流
 - 移动端自动单列布局
 - 深色 / 浅色模式切换
+- PWA 安装与基础离线访问
 - 毛玻璃、圆角卡片、浅色系配色
 - 通过 `config.json` 配置个人信息、社交图标、背景图和 RSS 源
 - 附带 Cloudflare Worker RSS 代理，解决浏览器跨域读取 RSS 的问题
@@ -15,6 +16,8 @@
 personal-homepage-ios26/
 ├── index.html
 ├── config.json
+├── site.webmanifest
+├── service-worker.js
 ├── assets/
 │   ├── css/styles.css
 │   ├── js/app.js
@@ -108,7 +111,7 @@ assets/images/background.jpg
 然后改成：
 
 ```json
-"image": "assets/images/background.jpg",
+"image": "assets/images/background.webp",
 "opacity": 0.28,
 "blur": 0,
 "position": "center",
@@ -172,6 +175,18 @@ https://rss-proxy.yourname.workers.dev/
 - Build output directory：`/`
 
 也可以直接拖拽整个项目文件夹到 Pages 的上传部署页面。
+
+## PWA 支持
+
+项目已内置 PWA 基础能力：
+
+- `site.webmanifest`：声明应用名称、启动路径、显示模式、主题色和安装图标。
+- `service-worker.js`：缓存页面外壳、样式、脚本、配置和本地图片资源。
+- `assets/js/app.js`：页面加载后自动注册 Service Worker。
+
+本地调试时请通过 `http://localhost:8080` 访问；直接打开 `index.html` 时浏览器不会启用 Service Worker。部署到 HTTPS 域名后，浏览器会在满足条件时展示“安装应用”入口。
+
+如果更新了 CSS/JS 文件版本号，请同步更新 `service-worker.js` 里的缓存清单；如果需要强制所有用户刷新缓存，可递增 `CACHE_VERSION`。
 
 ## 常用替换位置
 
