@@ -209,7 +209,6 @@ function renderProfile(config) {
 
   setText('profileName', name);
   setText('profileRole', profile.role || 'Developer · Creator');
-  setText('profileIntro', profile.intro || '');
   setText('profileStatus', profile.status || 'Currently online');
 
   // 只保留一个头像容器：未配置头像时显示 initials；配置头像且加载成功时显示图片。

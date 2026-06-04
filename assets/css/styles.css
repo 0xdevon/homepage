@@ -199,15 +199,6 @@ html[data-theme="dark"] .glass::after {
   font-size: 14px;
 }
 
-.intro {
-  position: relative;
-  z-index: 1;
-  margin: 24px 0 20px;
-  color: var(--muted);
-  font-size: 15px;
-  line-height: 1.75;
-}
-
 .status {
   position: relative;
   z-index: 1;
@@ -220,6 +211,7 @@ html[data-theme="dark"] .glass::after {
   border: 1px solid var(--border);
   color: var(--muted);
   font-size: 13px;
+  margin-top: 24px;
 }
 
 html[data-theme="dark"] .status {
@@ -662,14 +654,10 @@ html[data-theme="dark"] .footer {
     text-align: left;
   }
 
-  .intro {
-    text-align: center;
-  }
-
   .status {
     display: flex;
     width: fit-content;
-    margin: 0 auto;
+    margin: 24px auto 0;
   }
 
   .social-grid {
@@ -732,8 +720,7 @@ html[data-theme="dark"] .footer {
     font-size: 38px;
   }
 
-  .hero p,
-  .intro {
+  .hero p {
     font-size: 14px;
   }
 

@@ -53,7 +53,6 @@ http://localhost:8080
   "name": "Devon Chan",
   "initials": "DC",
   "role": "Developer · Creator · Photographer",
-  "intro": "这里是我的个人入口页...",
   "status": "Currently building personal projects",
   "avatar": ""
 }
