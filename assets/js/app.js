@@ -443,18 +443,20 @@ async function loadRss(config) {
     let items = [];
 
     // Worker 代理默认返回 JSON，静态直连则返回 XML。
-    let json;
+    let parsedAsJson = false;
     try {
-      json = JSON.parse(text);
-    } catch (error) {
-      if (json) {
-        if (Array.isArray(json.items)) {
-          items = json.items.map(item => normalizeItem({ ...item, category: item.category || source.category, source: item.source || source.name }, source));
-        } else if (json.error) {
-          throw new Error(json.error);
-        }
+      const json = JSON.parse(text);
+      parsedAsJson = true;
+      if (Array.isArray(json.items)) {
+        items = json.items.map(item => normalizeItem({ ...item, category: item.category || source.category, source: item.source || source.name }, source));
+      } else if (json.error) {
+        throw new Error(json.error);
+      } else {
+        throw new Error('RSS proxy returned an unexpected JSON response');
       }
-
+    } catch (error) {
+      if (parsedAsJson) throw error;
+      items = parseRssXml(text, source);
     }
 
     if (!items.length) {
