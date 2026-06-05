@@ -1,16 +1,18 @@
 # Personal Homepage (iOS26 Style)
 
-一个简约个人主页模板，支持：
+[English](README.md) | [中文](README.zh-CN.md)
 
-- PC 端左侧个人卡片 + 右侧 RSS 信息流
-- 移动端自动单列布局
-- 深色 / 浅色模式切换
-- PWA 安装与基础离线访问
-- 毛玻璃、圆角卡片、浅色系配色
-- 通过 `config.json` 配置个人信息、社交图标、背景图和 RSS 源
-- 附带 Cloudflare Worker RSS 代理，解决浏览器跨域读取 RSS 的问题
+A minimalist personal homepage template with:
 
-## 项目结构
+- A personal profile card on the left and an RSS feed on the right for desktop
+- Automatic single-column layout on mobile
+- Dark / light mode switching
+- PWA installation and basic offline access
+- Frosted glass, rounded cards, and a light color palette
+- Personal information, social icons, background image, and RSS sources configured through `config.json`
+- A bundled Cloudflare Worker RSS proxy to solve browser CORS issues when reading RSS feeds
+
+## Project Structure
 
 ```text
 personal-homepage-ios26/
@@ -28,25 +30,25 @@ personal-homepage-ios26/
 └── workers/rss-proxy-worker.js
 ```
 
-## 本地预览
+## Local Preview
 
-不要直接双击 `index.html`，因为浏览器可能禁止直接读取 `config.json`。
+Do not double-click `index.html` directly, because the browser may block direct reads of `config.json`.
 
-推荐在项目根目录执行：
+Run this from the project root instead:
 
 ```bash
 python3 -m http.server 8080
 ```
 
-然后访问：
+Then open:
 
 ```text
 http://localhost:8080
 ```
 
-## 修改个人信息
+## Updating Personal Information
 
-编辑 `config.json`：
+Edit `config.json`:
 
 ```json
 "profile": {
@@ -58,15 +60,15 @@ http://localhost:8080
 }
 ```
 
-如果要使用头像，把头像放到 `assets/images/`，然后配置：
+To use an avatar, place the image in `assets/images/`, then configure:
 
 ```json
 "avatar": "assets/images/avatar.jpg"
 ```
 
-## 配置社交媒体入口和图标
+## Configuring Social Links and Icons
 
-编辑 `socialLinks`：
+Edit `socialLinks`:
 
 ```json
 {
@@ -77,19 +79,19 @@ http://localhost:8080
 }
 ```
 
-图标可以是：
+Icons can be:
 
-- 本地 SVG/PNG：`assets/icons/github.svg`
-- 远程图片 URL：`https://example.com/icon.svg`
-- SVG 字符串：`"icon": "<svg viewBox=\"0 0 24 24\" ...></svg>"`
-- 独立 SVG 字符串字段：`"iconSvg": "<svg ...></svg>"`
-- 如果不写 `icon`，可以用 `emoji` 字段替代
+- Local SVG/PNG: `assets/icons/github.svg`
+- Remote image URL: `https://example.com/icon.svg`
+- SVG string: `"icon": "<svg viewBox=\"0 0 24 24\" ...></svg>"`
+- Separate SVG string field: `"iconSvg": "<svg ...></svg>"`
+- If `icon` is omitted, the `emoji` field can be used instead
 
-当前版本已内置 `Unsplash` 和 `微博` 两个社交入口示例，它们使用的就是 SVG 字符串形式，后续可以直接在 `config.json > socialLinks` 里替换。
+The current version includes two example social links, `Unsplash` and `微博`, both using SVG strings. You can replace them directly in `config.json > socialLinks`.
 
-## 配置背景图
+## Configuring the Background Image
 
-编辑 `background`：
+Edit `background`:
 
 ```json
 "background": {
@@ -101,13 +103,13 @@ http://localhost:8080
 }
 ```
 
-如果你想换成摄影背景，把图片放到：
+If you want to use a photography background, place the image at:
 
 ```text
 assets/images/background.jpg
 ```
 
-然后改成：
+Then update it to:
 
 ```json
 "image": "assets/images/background.webp",
@@ -117,9 +119,9 @@ assets/images/background.jpg
 "size": "cover"
 ```
 
-## 配置 RSS 源
+## Configuring RSS Sources
 
-编辑 `rss.sources`：
+Edit `rss.sources`:
 
 ```json
 "sources": [
@@ -136,114 +138,112 @@ assets/images/background.jpg
 ]
 ```
 
-分类需要和 `rss.categories` 中的 `id` 对应。
+Each category must match an `id` in `rss.categories`.
 
-## 关于 RSS 跨域问题
+## About RSS CORS Issues
 
-大多数 RSS 源不允许浏览器直接跨域读取。项目默认把 `config.json > rss.proxyEndpoint` 设置为 `/rss-proxy`，部署到 Cloudflare Pages 后会使用 `functions/rss-proxy.js` 作为同源代理读取真实 RSS。
+Most RSS sources do not allow browsers to read them directly across origins. By default, the project sets `config.json > rss.proxyEndpoint` to `/rss-proxy`. After deployment to Cloudflare Pages, `functions/rss-proxy.js` will be used as a same-origin proxy to read the real RSS feeds.
 
-`fallbackItems` 只作为兜底占位：只要任意一个配置的 RSS 源成功返回内容，页面就会展示真实 RSS；只有所有 RSS 源都失败或都没有解析到条目时，才会展示 `fallbackItems`。
+`fallbackItems` are only fallback placeholders. As long as any configured RSS source returns content successfully, the page will show real RSS content. `fallbackItems` are shown only when all RSS sources fail or no entries can be parsed.
 
-本地如果使用 `python3 -m http.server` 预览，Cloudflare Pages Functions 不会运行，所以 `/rss-proxy` 会不可用，此时页面会进入 fallback 占位。这是本地静态服务器限制，不代表线上 Pages 部署后的真实 RSS 加载失败。
+If you preview locally with `python3 -m http.server`, Cloudflare Pages Functions will not run, so `/rss-proxy` will be unavailable and the page will fall back to placeholder items. This is a limitation of the local static server and does not mean RSS loading will fail after deployment to Pages.
 
-### 可选：独立部署 Worker
+### Optional: Deploy a Standalone Worker
 
-如果你不想使用 Pages Functions，也可以新建一个 Cloudflare Worker：
+If you do not want to use Pages Functions, you can create a Cloudflare Worker instead:
 
-1. 新建一个 Cloudflare Worker
-2. 把 `workers/rss-proxy-worker.js` 内容复制进去
-3. 部署后得到一个地址，例如：
+1. Create a new Cloudflare Worker
+2. Copy the contents of `workers/rss-proxy-worker.js` into it
+3. Deploy it and obtain a URL, for example:
 
 ```text
 https://rss-proxy.yourname.workers.dev/
 ```
 
-4. 回到 `config.json`，设置：
+4. Return to `config.json` and set:
 
 ```json
 "proxyEndpoint": "https://rss-proxy.yourname.workers.dev/"
 ```
 
-如果把 `proxyEndpoint` 留空，页面会尝试直接读取 RSS；由于跨域限制，很多源会读取失败，最终可能进入 fallback 占位。
+If `proxyEndpoint` is left empty, the page will try to read RSS feeds directly. Because of CORS restrictions, many sources may fail and the page may eventually show fallback placeholders.
 
-## 部署到 Cloudflare Pages
+## Deploying to Cloudflare Pages
 
-把整个文件夹推送到 GitHub，然后在 Cloudflare Pages 里选择该仓库：
+Push the entire folder to GitHub, then select that repository in Cloudflare Pages:
 
-- Build command：留空
-- Build output directory：`/`
+- Build command: leave empty
+- Build output directory: `/`
 
-也可以直接拖拽整个项目文件夹到 Pages 的上传部署页面。
+You can also drag and drop the entire project folder into the Pages upload deployment page.
 
-## PWA 支持
+## PWA Support
 
-项目已内置 PWA 基础能力：
+The project includes basic PWA support:
 
-- `site.webmanifest`：声明应用名称、启动路径、显示模式、主题色和安装图标。
-- `service-worker.js`：缓存页面外壳、样式、脚本、配置和本地图片资源。
-- `assets/js/app.js`：页面加载后自动注册 Service Worker。
+- `site.webmanifest`: declares the app name, start URL, display mode, theme color, and install icons.
+- `service-worker.js`: caches the page shell, styles, scripts, config, and local image assets.
+- `assets/js/app.js`: automatically registers the Service Worker after the page loads.
 
-本地调试时请通过 `http://localhost:8080` 访问；直接打开 `index.html` 时浏览器不会启用 Service Worker。部署到 HTTPS 域名后，浏览器会在满足条件时展示“安装应用”入口。
+For local debugging, visit `http://localhost:8080`; the browser will not enable the Service Worker when opening `index.html` directly. After deployment to an HTTPS domain, the browser will show the "Install app" entry when the requirements are met.
 
-如果更新了 CSS/JS 文件版本号，请同步更新 `service-worker.js` 里的缓存清单；如果需要强制所有用户刷新缓存，可递增 `CACHE_VERSION`。
+If you update CSS/JS file versions, also update the cache list in `service-worker.js`. To force all users to refresh cached assets, increment `CACHE_VERSION`.
 
-## 常用替换位置
+## Common Replacement Locations
 
-- 个人名称：`config.json > profile.name`
-- 网站标题：`config.json > site.title`
-- 社交链接：`config.json > socialLinks`
-- 背景图：`config.json > background.image`
-- RSS 源：`config.json > rss.sources`
-- RSS 代理：`config.json > rss.proxyEndpoint`
+- Personal name: `config.json > profile.name`
+- Website title: `config.json > site.title`
+- Social links: `config.json > socialLinks`
+- Background image: `config.json > background.image`
+- RSS sources: `config.json > rss.sources`
+- RSS proxy: `config.json > rss.proxyEndpoint`
 
+## Avatar Display Notes
 
+When `profile.avatar` is empty, only the default avatar generated from initials is shown. After an avatar image path is configured, only the real avatar is shown. The current version fixes the issue where the avatar image and default avatar could appear at the same time.
 
-## 头像显示说明
+## v3 Fix Notes
 
-`profile.avatar` 为空时，只显示 initials 生成的默认头像；配置头像图片路径后，只显示真实头像。当前版本已修复头像图片和默认头像同时出现的问题。
+- Fixed an issue where a broken image and the default initials avatar could appear together when no avatar was configured or when the avatar path was invalid.
+- The avatar area now keeps only one `.avatar` container: when `profile.avatar` is empty, it shows `profile.initials`; after an avatar is configured and loads successfully, it is replaced with the image.
 
-## v3 修复说明
+## v4 Deployment Notes: Handling config.json Loading Failures
 
-- 修复未配置头像或头像路径失效时可能同时显示 broken image 与默认 initials 头像的问题。
-- 现在头像区域只保留一个 `.avatar` 容器：`profile.avatar` 为空时显示 `profile.initials`；配置头像且加载成功后才替换为图片。
+If the page shows `config.json 加载失败`, it is usually not a code issue. It usually means the deployment directory is wrong: `config.json` was not deployed at the same level as `index.html`.
 
-## v4 部署说明：config.json 加载失败的处理
+### Cloudflare Pages Command Deployment
 
-如果页面显示 `config.json 加载失败`，通常不是代码问题，而是部署目录不对：`config.json` 没有和 `index.html` 部署在同一层。
-
-### Cloudflare Pages 命令部署
-
-请进入项目根目录后再执行：
+Enter the project root before running:
 
 ```bash
 cd personal-homepage-ios26
 npx wrangler pages deploy . --project-name=你的Pages项目名
 ```
 
-部署后直接访问：
+After deployment, visit:
 
 ```text
 https://你的域名/config.json
 ```
 
-如果这里返回 JSON，说明配置文件已经部署成功。
+If this returns JSON, the configuration file has been deployed successfully.
 
-### Cloudflare Workers 静态资源部署
+### Cloudflare Workers Static Assets Deployment
 
-v4 已内置 `wrangler.jsonc`，如果你希望使用 Workers 静态资源方式，可以在项目根目录执行：
+v4 includes `wrangler.jsonc`. If you want to use Workers static assets, run this from the project root:
 
 ```bash
 cd personal-homepage-ios26
 npx wrangler deploy
 ```
 
-注意：不要在解压后的上一级目录执行部署命令，否则可能只上传外层目录，导致 `/config.json` 访问不到。
+Note: do not run the deployment command from the parent directory of the extracted folder. Otherwise, only the outer directory may be uploaded and `/config.json` may become inaccessible.
 
-## SVG 图标颜色说明
+## SVG Icon Color Notes
 
-如果你的 `config.json` 中直接使用 SVG 字符串，页面会默认把 SVG 中写死的纯白/纯黑 `fill` 或 `stroke` 转换成 `currentColor`，这样在浅色、深色模式下都能保持清晰可见。
+If your `config.json` directly uses SVG strings, the page automatically converts hard-coded pure white / pure black `fill` or `stroke` values in the SVG to `currentColor`, keeping icons readable in both light and dark mode.
 
-单个社交链接可额外配置：
+Each social link can also configure:
 
 ```json
 {
@@ -255,7 +255,7 @@ npx wrangler deploy
 }
 ```
 
-如果你希望保留 SVG 原本的品牌色，不希望自动改色，可以设置：
+If you want to preserve the SVG's original brand colors and disable automatic recoloring, set:
 
 ```json
 {
@@ -263,14 +263,14 @@ npx wrangler deploy
 }
 ```
 
-## v8 图标颜色修复说明
+## v8 Icon Color Fix Notes
 
-如果你在 `config.json` 中使用阿里 Iconfont 或其他 SVG 字符串，很多 SVG 会写死 `fill="#ffffff"`。v8 会自动将纯白/纯黑 SVG 颜色归一为 `currentColor`，并在 CSS 层同时覆盖 SVG 根节点和子节点的 `fill/stroke`。浅色模式下图标底座也加入了轻微冷色对比，避免左侧图标和白色毛玻璃背景融合。
+If you use Alibaba Iconfont or other SVG strings in `config.json`, many SVGs may hard-code `fill="#ffffff"`. v8 automatically normalizes pure white / pure black SVG colors to `currentColor`, and the CSS layer overrides `fill/stroke` on both the SVG root and child nodes. In light mode, the icon base also uses a subtle cool-toned contrast so left-side icons do not blend into the white frosted-glass background.
 
-若你希望某个图标保留品牌色，可在对应 `socialLinks` 项中增加：
+To preserve brand colors for a specific icon, add this to the corresponding `socialLinks` item:
 
 ```json
 "preserveIconColor": true
 ```
 
-如果部署后仍看到旧样式，请强制刷新浏览器缓存：`Command + Shift + R`。
+If you still see old styles after deployment, force-refresh the browser cache with `Command + Shift + R`.
