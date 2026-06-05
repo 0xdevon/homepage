@@ -8,8 +8,8 @@
   --card: rgba(255, 255, 255, 0.48);
   --card-strong: rgba(255, 255, 255, 0.64);
   --border: rgba(120, 133, 155, 0.15);
-  --shadow: 0 24px 80px rgba(55, 70, 110, 0.10);
-  --shadow-soft: 0 12px 36px rgba(55, 70, 110, 0.07);
+  --shadow: none;
+  --shadow-soft: none;
   --accent: #5b8cff;
   --accent-2: #8fd3ff;
   --accent-3: #ffc6e8;
@@ -523,7 +523,6 @@ html[data-theme="dark"] .feed-tabs {
 .tab.active {
   color: var(--text);
   background: var(--card-strong);
-  box-shadow: 0 4px 18px rgba(55, 70, 110, 0.08);
 }
 
 .rss-list {
