@@ -10,6 +10,7 @@ let allRssItems = [];
 let activeFilter = 'all';
 let rssPageSize = 6;
 let rssVisibleCounts = {};
+let rssFillFrame = 0;
 const themeIcons = {
   light: `
     <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
@@ -273,6 +274,8 @@ function renderTabs(categories = []) {
       resetRssPagination(activeFilter);
       rssList.scrollTop = 0;
       renderRssItems(allRssItems);
+      scheduleRssListFill();
+      rssList.scrollTop = 0;
     });
   });
 }
@@ -318,6 +321,34 @@ function loadMoreRssItems() {
   renderRssItems(allRssItems);
 }
 
+function fillRssListIfNeeded() {
+  const visible = getVisibleRssItems(allRssItems);
+  if (!visible.length || !rssList.clientHeight) return;
+  if (getComputedStyle(rssList).overflowY === 'visible') return;
+
+  let attempts = 0;
+  const maxAttempts = Math.ceil(visible.length / rssPageSize) + 1;
+
+  while (
+    attempts < maxAttempts &&
+    hasMoreRssItems() &&
+    rssList.scrollHeight <= rssList.clientHeight + 4
+  ) {
+    const currentCount = rssVisibleCounts[activeFilter] || rssPageSize;
+    rssVisibleCounts[activeFilter] = Math.min(currentCount + rssPageSize, visible.length);
+    renderRssItems(allRssItems);
+    attempts += 1;
+  }
+}
+
+function scheduleRssListFill() {
+  if (rssFillFrame) cancelAnimationFrame(rssFillFrame);
+  rssFillFrame = requestAnimationFrame(() => {
+    rssFillFrame = 0;
+    fillRssListIfNeeded();
+  });
+}
+
 function maybeLoadMoreRssItems() {
   if (!hasMoreRssItems()) return;
 
@@ -334,7 +365,10 @@ function maybeLoadMoreRssItems() {
 function setupRssLazyLoading() {
   rssList.addEventListener('scroll', maybeLoadMoreRssItems, { passive: true });
   window.addEventListener('scroll', maybeLoadMoreRssItems, { passive: true });
-  window.addEventListener('resize', maybeLoadMoreRssItems);
+  window.addEventListener('resize', () => {
+    scheduleRssListFill();
+    maybeLoadMoreRssItems();
+  });
 }
 
 function initPwa() {
@@ -490,6 +524,7 @@ async function loadRss(config) {
   rssVisibleCounts = {};
   resetRssPagination(activeFilter);
   renderRssItems(allRssItems);
+  scheduleRssListFill();
 }
 
 async function loadConfig() {
