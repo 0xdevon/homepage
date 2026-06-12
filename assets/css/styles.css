@@ -461,6 +461,27 @@ html[data-theme="light"] .theme-icon {
     position: static;
     max-height: calc(100vh - (var(--desktop-edge) * 2));
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120, 133, 155, 0.36) transparent;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .sidebar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(120, 133, 155, 0.36);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(120, 133, 155, 0.48);
   }
 
   .main {
