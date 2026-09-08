@@ -120,7 +120,7 @@
       {
         "title": "AI 工具正在改变个人网站的内容生产方式",
         "link": "#",
-        "source": "Tech",
+        "source": "科技",
         "category": "tech",
         "publishedAt": "2 hours ago",
         "summary": "从自动摘要、RSS 聚合到个人知识库联动，个人主页正在从静态名片变成轻量信息中心。"
@@ -128,7 +128,7 @@
       {
         "title": "前端组件库正在从页面复用走向产品系统",
         "link": "#",
-        "source": "Tech",
+        "source": "科技",
         "category": "tech",
         "publishedAt": "3 hours ago",
         "summary": "设计变量、状态规范和数据加载策略开始成为组件库的核心，而不只是按钮和卡片的样式集合。"
@@ -136,7 +136,7 @@
       {
         "title": "边缘函数让个人项目的后端变得更轻",
         "link": "#",
-        "source": "Tech",
+        "source": "科技",
         "category": "tech",
         "publishedAt": "5 hours ago",
         "summary": "把 RSS 代理、表单提交和轻量缓存放到边缘节点，可以减少运维成本，也能改善跨区域访问体验。"
@@ -144,7 +144,7 @@
       {
         "title": "本地优先应用重新受到开发者关注",
         "link": "#",
-        "source": "Tech",
+        "source": "科技",
         "category": "tech",
         "publishedAt": "Yesterday",
         "summary": "离线可用、快速响应和隐私控制，是越来越多个人效率工具选择本地优先架构的原因。"
@@ -152,7 +152,7 @@
       {
         "title": "如何为信息流设计更自然的分页体验",
         "link": "#",
-        "source": "Tech",
+        "source": "科技",
         "category": "tech",
         "publishedAt": "2 days ago",
         "summary": "首屏内容要足够填满容器，后续加载要发生在用户接近底部之前，避免出现明显等待和空白。"
@@ -160,7 +160,7 @@
       {
         "title": "小型项目也值得建立发布检查清单",
         "link": "#",
-        "source": "Tech",
+        "source": "科技",
         "category": "tech",
         "publishedAt": "3 days ago",
         "summary": "缓存版本、移动端断点、空状态和错误回退，是个人网站上线前最容易遗漏的几个细节。"
@@ -168,7 +168,7 @@
       {
         "title": "如何用极简构图提升旅行摄影的画面层次",
         "link": "#",
-        "source": "Photography",
+        "source": "摄影",
         "category": "photo",
         "publishedAt": "Today",
         "summary": "减少元素、强化光线方向、控制前景与背景关系，是风景照片更耐看的关键。"
@@ -176,7 +176,7 @@
       {
         "title": "清晨侧光适合拍摄城市建筑的安静质感",
         "link": "#",
-        "source": "Photography",
+        "source": "摄影",
         "category": "photo",
         "publishedAt": "4 hours ago",
         "summary": "低角度光线会让墙面纹理、窗框阴影和街道层次更清晰，适合记录城市醒来的瞬间。"
@@ -184,7 +184,7 @@
       {
         "title": "街头摄影中等待比连拍更重要",
         "link": "#",
-        "source": "Photography",
+        "source": "摄影",
         "category": "photo",
         "publishedAt": "Yesterday",
         "summary": "先确定背景和光线，再等待人物进入画面，往往比随机抓拍更容易得到完整的叙事。"
@@ -192,7 +192,7 @@
       {
         "title": "雨天反光能把普通街景变成双层画面",
         "link": "#",
-        "source": "Photography",
+        "source": "摄影",
         "category": "photo",
         "publishedAt": "2 days ago",
         "summary": "水面、玻璃和车身反光可以扩展画面空间，但需要控制高光，避免主体被杂乱反射吞没。"
@@ -200,7 +200,7 @@
       {
         "title": "旅行照片的色彩统一可以从拍摄前开始",
         "link": "#",
-        "source": "Photography",
+        "source": "摄影",
         "category": "photo",
         "publishedAt": "3 days ago",
         "summary": "在同一组照片中控制时间段、天气和主色调，后期只需要轻微调整就能形成稳定风格。"
@@ -208,7 +208,7 @@
       {
         "title": "用长焦压缩感拍出城市道路的秩序",
         "link": "#",
-        "source": "Photography",
+        "source": "摄影",
         "category": "photo",
         "publishedAt": "4 days ago",
         "summary": "长焦镜头能压缩距离，让楼宇、路牌和行人形成更紧密的图案，适合表现城市密度。"
@@ -216,7 +216,7 @@
       {
         "title": "把个人主页做成数字名片：内容越少，转化越清晰",
         "link": "#",
-        "source": "Life",
+        "source": "生活",
         "category": "life",
         "publishedAt": "Yesterday",
         "summary": "首页最重要的不是塞满内容，而是让访问者快速知道你是谁，以及该点击哪里。"
@@ -224,7 +224,7 @@
       {
         "title": "周末整理订阅源，让信息摄入重新变轻",
         "link": "#",
-        "source": "Life",
+        "source": "生活",
         "category": "life",
         "publishedAt": "6 hours ago",
         "summary": "删除长期不读的来源，给高质量内容分组，比不断寻找新工具更能改善日常阅读体验。"
@@ -232,7 +232,7 @@
       {
         "title": "给个人项目留一个固定维护窗口",
         "link": "#",
-        "source": "Life",
+        "source": "生活",
         "category": "life",
         "publishedAt": "Today",
         "summary": "每周集中处理依赖、内容和样式细节，可以避免小问题长期堆积，也能保持项目的新鲜感。"
@@ -240,7 +240,7 @@
       {
         "title": "数字空间也需要定期做一次断舍离",
         "link": "#",
-        "source": "Life",
+        "source": "生活",
         "category": "life",
         "publishedAt": "2 days ago",
         "summary": "清理收藏夹、旧截图和重复笔记，会让真正有价值的信息更容易被再次找到。"
@@ -248,7 +248,7 @@
       {
         "title": "把灵感入口放在每天最容易触达的位置",
         "link": "#",
-        "source": "Life",
+        "source": "生活",
         "category": "life",
         "publishedAt": "3 days ago",
         "summary": "一个可靠的记录入口比复杂的知识库结构更重要，先降低捕捉想法的摩擦。"
@@ -256,7 +256,7 @@
       {
         "title": "个人主页可以成为长期自我介绍的容器",
         "link": "#",
-        "source": "Life",
+        "source": "生活",
         "category": "life",
         "publishedAt": "4 days ago",
         "summary": "相比社交平台的即时动态，主页更适合沉淀稳定的作品、联系方式和个人叙事。"

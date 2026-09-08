@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'homepage-pwa';
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const STATIC_CACHE = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -7,7 +7,7 @@ const APP_SHELL = [
     './index.html',
     './config.json',
     './site.webmanifest',
-    './assets/css/styles.css?v=14',
+    './assets/css/styles.css?v=17',
     './assets/js/app.js?v=16',
     './assets/images/apple-touch-icon.png',
     './assets/images/favicon-32x32.png',

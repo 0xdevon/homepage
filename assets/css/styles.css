@@ -67,6 +67,14 @@ body {
   transition: background 280ms ease, color 280ms ease;
 }
 
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(96, 156, 255, 0.30), transparent 34vw),
+    radial-gradient(circle at 88% 8%, rgba(255, 134, 214, 0.24), transparent 36vw),
+    radial-gradient(circle at 68% 88%, rgba(105, 220, 255, 0.20), transparent 32vw),
+    linear-gradient(135deg, var(--bg), var(--bg-2));
+}
+
 body::before {
   content: "";
   position: fixed;
@@ -238,6 +246,10 @@ html[data-theme="dark"] .status {
   color: var(--muted-2);
   text-transform: uppercase;
   letter-spacing: 0.12em;
+}
+
+html[data-theme="dark"] .section-title {
+  color: #a7b1c4;
 }
 
 .social-grid {
@@ -728,6 +740,13 @@ html[data-theme="dark"] .footer {
       linear-gradient(135deg, var(--bg), var(--bg-2));
   }
 
+  html[data-theme="dark"] body {
+    background:
+      radial-gradient(circle at 12% 2%, rgba(96, 156, 255, 0.24), transparent 70vw),
+      radial-gradient(circle at 88% 4%, rgba(255, 134, 214, 0.20), transparent 76vw),
+      linear-gradient(135deg, var(--bg), var(--bg-2));
+  }
+
   .shell {
     width: calc(100% - 22px);
     padding-top: max(12px, env(safe-area-inset-top));
@@ -789,7 +808,9 @@ html[data-theme="dark"] .footer {
   }
 
   .rss-item p {
-    display: none;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    max-height: calc(1.65em * 1);
   }
 }
 
